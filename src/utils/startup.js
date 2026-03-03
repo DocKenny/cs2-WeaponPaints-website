@@ -1,5 +1,5 @@
 const query = require('../database/db').query
-const config = require("../../config.json")
+const config = require("../../config.js")
 const Logger = require('./logger')
 const version = require('../../package.json').version
 const request = require('request');
@@ -38,7 +38,7 @@ Website:${GREEN} https://github.com/L1teD/cs2-WeaponPaints-website \x1b[0m
 
 
     checkTables()
-    const register = (typeof config.enableStats == 'undefined') ? true : config.enableStats
+    const register = (typeof config.enableStats == 'undefined') ? false : config.enableStats
     if (register) {
         registerInNetwork()
     }
@@ -70,6 +70,9 @@ async function checkTables() {
 }
 
 function registerInNetwork(params) {
+    if (!config.connect) {
+        return;
+    }
     Logger.core.info("Sending a registration request to a stats server...")
     request.post(
         'https://stats.l1te.pw/',

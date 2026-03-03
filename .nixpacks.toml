@@ -5,4 +5,4 @@ command = "npm install"
 command = ""  # skip build
 
 [phases.start]
-command = "npm run dev"
+command = "npm start"
