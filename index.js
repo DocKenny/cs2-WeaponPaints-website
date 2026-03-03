@@ -12,7 +12,7 @@ const session = require('express-session')
 const MySQLStore = require('express-mysql-session')(session);
 
 const Logger = require('./src/utils/logger')
-const config = require('./config.json')
+const config = require('./config.js')
 
 const app = express();
 const port = config.PORT || 27275;
