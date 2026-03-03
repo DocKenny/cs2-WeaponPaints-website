@@ -5,7 +5,6 @@
   "main": ".",
   "scripts": {
     "dev": "nodemon --ignore ./web/ .",
-    "build": "node builder.js",
     "updateApi": "node updateApi.js"
   },
   "author": "L1teD",
