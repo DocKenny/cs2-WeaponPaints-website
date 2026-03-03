@@ -1,0 +1,8 @@
+[phases.setup]
+command = "npm install"
+
+[phases.build]
+command = ""  # skip build
+
+[phases.start]
+command = "npm run dev"
