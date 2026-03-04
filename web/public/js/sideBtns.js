@@ -38,13 +38,8 @@ function extractInventoryKeyFromUrl(url) {
 
     let key = url.substring(idx + marker.length)
 
-    // strip .png
+    // strip single .png extension, keep *_png suffix as part of the inventory key
     if (key.endsWith('.png')) {
-        key = key.slice(0, -4)
-    }
-
-    // most tracker files end with "_png" before .png, strip that suffix too
-    if (key.endsWith('_png')) {
         key = key.slice(0, -4)
     }
 
