@@ -9,7 +9,7 @@ window.agentsObject = await agentsTemp.json()
 window.musicObject = await musicTemp.json()
 
 // Normalize image URLs using ByMykel's images.json (CDN first, then fallback)
-const IMAGES_JSON_URL = 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/refs/heads/main/static/images.json'
+const IMAGES_JSON_URL = '/api/images-map'
 const FALLBACK_BASE_URL = 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/'
 
 let imagesJsonPromise = null
