@@ -8,6 +8,102 @@ window.defaultsObject = await defaultsTemp.json()
 window.agentsObject = await agentsTemp.json()
 window.musicObject = await musicTemp.json()
 
+// Normalize image URLs using ByMykel's images.json (CDN first, then fallback)
+const IMAGES_JSON_URL = 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/refs/heads/main/static/images.json'
+const FALLBACK_BASE_URL = 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/'
+
+let imagesJsonPromise = null
+
+async function loadImagesJson() {
+    if (!imagesJsonPromise) {
+        imagesJsonPromise = fetch(IMAGES_JSON_URL)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch images.json: ${res.status} ${res.statusText}`)
+                }
+                return res.json()
+            })
+            .catch(err => {
+                console.warn('Failed to load images.json from ByMykel:', err)
+                return null
+            })
+    }
+    return imagesJsonPromise
+}
+
+function extractInventoryKeyFromUrl(url) {
+    const marker = '/static/panorama/images/'
+    const idx = url.indexOf(marker)
+    if (idx === -1) return null
+
+    let key = url.substring(idx + marker.length)
+
+    // strip .png
+    if (key.endsWith('.png')) {
+        key = key.slice(0, -4)
+    }
+
+    // most tracker files end with "_png" before .png, strip that suffix too
+    if (key.endsWith('_png')) {
+        key = key.slice(0, -4)
+    }
+
+    return key // e.g. "econ/default_generated/weapon_deagle_hy_ddpat_urb_light"
+}
+
+function normalizeImageField(obj, imagesMap) {
+    if (!obj || !obj.image) return
+
+    const inventoryKey = extractInventoryKeyFromUrl(obj.image)
+    if (!inventoryKey || !imagesMap) return
+
+    const cdnUrl = imagesMap[inventoryKey]
+    if (cdnUrl) {
+        obj.image = cdnUrl
+    } else {
+        // fall back to raw GitHub path constructed from the inventory key
+        obj.image = `${FALLBACK_BASE_URL}${inventoryKey}.png`
+    }
+}
+
+async function normalizeAllImages() {
+    const imagesMap = await loadImagesJson()
+    if (!imagesMap) {
+        // If we couldn't load the map, just keep existing URLs
+        return
+    }
+
+    // Skins: top-level image plus collection/crate images
+    skinsObject.forEach(skin => {
+        normalizeImageField(skin, imagesMap)
+
+        if (Array.isArray(skin.collections)) {
+            skin.collections.forEach(col => normalizeImageField(col, imagesMap))
+        }
+
+        if (Array.isArray(skin.crates)) {
+            skin.crates.forEach(crate => normalizeImageField(crate, imagesMap))
+        }
+    })
+
+    // Default weapons (knife/glove/weapon cards)
+    defaultsObject.forEach(weapon => {
+        normalizeImageField(weapon, imagesMap)
+    })
+
+    // Agents
+    agentsObject.forEach(agent => {
+        normalizeImageField(agent, imagesMap)
+    })
+
+    // Music kits
+    musicObject.forEach(music => {
+        normalizeImageField(music, imagesMap)
+    })
+}
+
+await normalizeAllImages()
+
 const sideBtnHandler = (activeBtn) => {
     // remove active background
     let allBtns = [
