@@ -16,6 +16,7 @@ const config = require('./config.js')
 
 const app = express();
 const port = config.PORT || 27275;
+console.log(port)
 
 let returnURL = `${config.PROTOCOL}://${config.HOST}/api/auth/steam/return`
 let realm = `${config.PROTOCOL}://${config.HOST}/`
@@ -23,7 +24,7 @@ let realm = `${config.PROTOCOL}://${config.HOST}/`
 if (config.HOST == 'localhost' || config.HOST == '127.0.0.1') {
     returnURL = `${config.PROTOCOL}://${config.HOST}:${config.PORT}/api/auth/steam/return`
     realm = `${config.PROTOCOL}://${config.HOST}:${config.PORT}/`
-    
+    console.log("USED LOCALHOST")
     Logger.core.trace(`'localhost/127.0.0.1' at config detected, *returnURL* and *realm* changed to have port in it`)
 }
 

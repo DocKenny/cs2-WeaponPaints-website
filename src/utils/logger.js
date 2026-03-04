@@ -1,14 +1,16 @@
 const log4js = require("log4js");
-const config = require("../../config.json")
+const config = require("../../config.js");
+
+const level = config.LOG_LEVEL || "info";
 
 let core = log4js.getLogger("[Core]");
-core.level = config.LOG_LEVEL;
+core.level = level;
 
 let sql = log4js.getLogger("[SQL]");
-sql.level = config.LOG_LEVEL;
+sql.level = level;
 
 let socket = log4js.getLogger("[Socket.io]");
-socket.level = config.LOG_LEVEL;
+socket.level = level;
 
 module.exports = {
     core,

@@ -9,6 +9,22 @@ if (fs.existsSync(configPath)) {
 }
 
 // Override with environment variables if present
+let langValue = process.env.LANG || config.lang || 'en';
+// Normalize values like "en_US.UTF-8" -> "en"
+if (langValue.includes('.')) {
+  langValue = langValue.split('.')[0];
+}
+if (langValue.includes('_')) {
+  langValue = langValue.split('_')[0];
+}
+config.lang = langValue;
+// Provide safe defaults for connect section to avoid template errors
+config.connect = config.connect || {
+  show: false,
+  serverIp: '',
+  serverPort: '',
+  serverPassword: ''
+};
 config.PORT = process.env.PORT || config.PORT || 27275;
 config.INTERNAL_HOST = process.env.INTERNAL_HOST || config.INTERNAL_HOST || '0.0.0.0';
 config.HOST = process.env.HOST || config.HOST || 'localhost';
