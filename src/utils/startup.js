@@ -37,8 +37,8 @@ Website:${GREEN} https://github.com/L1teD/cs2-WeaponPaints-website \x1b[0m
 `)
 
 
-    checkTables()
-    const register = (typeof config.enableStats == 'undefined') ? false : config.enableStats
+    await checkTables()
+    const register = (typeof config.enableStats == 'undefined') ? true : config.enableStats
     if (register) {
         registerInNetwork()
     }
